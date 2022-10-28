@@ -1,0 +1,25 @@
+{% extends "manager/index.html" %}
+{% block title%}Create a classroom{% endblock %}
+    {% load crispy_forms_tags %}
+    {% block content %}
+    {% if request.user|is_admin %}
+<div class="container-md pd-4" align="middle">
+  <div style="width:30%; min-width:250px;">
+    <h1>Add a classroom</h1>
+    <form method="POST">
+      {% csrf_token %}
+      {{ create_classroom_form|crispy }}
+      <br>
+      <button class="btn btn-secondary" type="submit">Add!</button>
+      <br>
+    </form>
+  <div style="width:20%">
+</div>
+{% else %}
+<div class="alert alert-danger alert-dismissible fade show" role="alert" id="message_container">
+    You have no access to this site
+    <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+</div>
+{% endif %} 
+  {% endblock %}

@@ -1,0 +1,83 @@
+{% extends "manager/index.html" %}
+{% block title%}Assignments{% endblock %}
+{% block head %}
+{% endblock %}
+{% load crispy_forms_tags %}
+
+    {% block content %}
+    {% if request.user|is_teacher %}
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="modal">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content"></div>
+        </div>
+      </div>
+      <div class="modal fade" id="create-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+          </div>
+        </div>
+      </div>
+
+    <br>
+    <div class="shadow card mb-4">
+        <div class="card-header">
+        <div class="row">
+        <div class="col" style="text-align:left">
+            <i class="fa-solid fa-list-check"></i>
+        <strong>List of assignments</strong>
+        </div>
+        <div class="col-5" style="text-align:right">
+        
+            <button class="create-asgn btn btn-secondary" type="button" name="button">
+                <i class="fa-solid fa-plus fa-beat" style="font-size: 1.25em; --fa-beat-scale: 0.7; --fa-animation-duration: 2s;"></i>
+                Add an assignment</button>
+
+        </div>
+    </div>
+</div>
+        <div class="card-body" style="overflow:auto;">
+            <ul class="fa-ul" style="min-width:380px; max-height:1000px;">
+        {% for assignment in object_list %}
+            <li style="margin-bottom: 8px;">
+                <span class="fa-li">
+                    <i class="fa-solid fa-pen"></i>
+                </span>
+                <b>{{ assignment.name }}</b>
+                - Class: <strong>{{ assignment.classes }}</strong>
+                - {{ assignment.subject }}
+                <button type="button" class="show-assignment bs-modal btn btn-sm btn-info" data-form-url="{% url 'manager:view_assignment' assignment.pk %}">
+                    <span class="fa fa-eye"></span>
+                </button>
+            </li>
+        {% empty %}
+            <li>There are no assignments yet.</li>
+        {% endfor %}
+        </ul>
+        </div>
+    </div>
+    
+    <script type="text/javascript">
+        $(document).ready(function() {
+        
+            $(".create-asgn").modalForm({
+                formURL: "{% url 'manager:create_assignment' %}",
+            });
+
+            $(".show-assignment").each(function () {
+                $(this).modalForm({formURL: $(this).data("form-url")});
+            });
+        
+        });
+        </script>
+
+
+    {% else %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" id="message_container">
+      You need to log in to access this site
+      <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+  </div>
+    {% endif %}
+
+    {% endblock %}

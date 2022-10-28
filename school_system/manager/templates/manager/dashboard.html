@@ -1,0 +1,130 @@
+{% extends "manager/index.html" %}
+{% block title%}Dashboard{% endblock %}
+{% block head %}
+{% endblock %}
+{% load crispy_forms_tags %}
+
+    {% block content %}
+    {% if request.user|is_admin %}
+    <div class="modal fade" tabindex="-1" role="dialog" id="modal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content"></div>
+      </div>
+    </div>
+    <div class="modal fade" id="create-modal" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+        </div>
+      </div>
+    </div>
+    <br>
+
+    <div class="card mb-4">
+      <div class="card-header">
+           <div class="row">
+            <div class="col" style="text-align:left">
+           <form action='/dashboard/{{ p_year }}/{{ prev_week }}'>
+              <button class="btn btn-secondary" type="submit">Previous week</button>
+            </form>
+              </div>
+            <div class="col" style="text-align:center">
+            <i class="fas fa-tachometer-alt"></i>
+           <b>Dashboard<br>{{ first_day_of_week|date:"d-m-Y" }} to {{ last_day_of_week|date:"d-m-Y" }}</b>
+            </div>
+            <div class="col" style="text-align:right">
+            <form action='/dashboard/{{ n_year }}/{{ next_week }}'>
+              <button class="btn btn-secondary" type="submit">Next week</button>
+            </form>
+            </div>
+          </div>
+      </div>
+      <div class="card-body" style="text-align:center; overflow:auto;">
+        <div class="shadow row bg-light bg-gradient" style="text-align:center; min-width:1000px;">
+          <div class="col" style="padding-right: 0px; padding-left: 0px;">
+                <div class="row">
+                  <div class="col">
+                    <div class="shadow card mb-4" style="text-align:left;">
+                      <div class="card-header bg-warning bg-gradient">
+                        <i class="fa-solid fa-exclamation"></i>
+                          Notices to review
+                      </div>
+                      <div class="card-body">
+                        {% for absence in absences %}
+                        {% if absence.status == 'In progress' %}
+                         <i class="fa-solid fa-spinner fa-spin-pulse"></i>
+                         Absence - <b>{{ absence.teacher }}</b> - 
+                         {{ absence.date|date:"d-m-Y" }}
+                         <button type="button" class="show-absence bs-modal btn btn-sm btn-info" data-form-url="{% url 'manager:view_absence' absence.pk %}">
+                          <span class="fa fa-eye"></span>
+                        </button>
+                        <br>
+                        {% endif %}
+                        {% endfor %}
+                      </div>
+                  </div>
+                  </div>
+                  <div class="col">
+                    <div class="shadow card mb-4" style="text-align:left;">
+                      <div class="card-header bg-success">
+                        <i class="fa-solid fa-check"></i>
+                          Reviewed notices
+                      </div>
+                      <div class="card-body">
+                        {% for absence in absences %}
+                          {% if absence.status == 'Reviewed' %}
+                            <i class="fa-solid fa-thumbs-up" style="color:green"></i>&nbsp;Absence - <b>{{ absence.teacher }}</b> - 
+                            {{ absence.date|date:"d-m-Y" }}
+                            <button type="button" class="show-absence bs-modal btn btn-sm btn-info" data-form-url="{% url 'manager:view_absence' absence.pk %}">
+                             <span class="fa fa-eye"></span>
+                           </button>
+                           <br>
+                          {% elif absence.status == "Denied" %}
+                            <i class="fa-solid fa-xmark" style="color:red"></i>&nbsp;Absence - <b>{{ absence.teacher }}</b> - 
+                            {{ absence.date|date:"d-m-Y" }}
+                            <button type="button" class="show-absence bs-modal btn btn-sm btn-info" data-form-url="{% url 'manager:view_absence' absence.pk %}">
+                             <span class="fa fa-eye"></span>
+                           </button>
+                           <br>
+                          {% endif %}
+                        {% endfor %}
+                      </div>
+                  </div>
+                  </div>
+                  <div class="col">
+                      <div class="shadow card mb-4" style="text-align:left;">
+                          <div class="card-header bg-info bg-gradient">
+                              <i class="fa-solid fa-circle-info"></i>
+                              Info
+                          </div>
+                          <div class="card-body">
+                              Number of students: {{students_number}}<br>
+                              Number of teachers: {{teachers_number}}<br>
+                              Pending notices: {{ pending_notices }}<br>
+                          </div>
+                          </div>
+                      </div>
+              </div>
+          </div>
+        </div>
+      </div>
+         
+      
+      <script type="text/javascript">
+        $(document).ready(function() {
+        
+            $(".show-absence").each(function () {
+                $(this).modalForm({formURL: $(this).data("form-url")});
+            });
+        
+        });
+        </script>
+
+    {% else %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" id="message_container">
+      You have no access to this site.
+      <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+  </div>
+    {% endif %}
+
+    {% endblock %}

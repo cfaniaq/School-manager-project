@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>{% block title%}Home page{% endblock %}</title>
+        {% load static %}
+        <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sofia&effect=neon|outline|emboss|shadow-multiple">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rancho">
+        <script src="https://kit.fontawesome.com/9970e918ff.js" crossorigin="anonymous"></script>
+        <script type="text/javascript" src={% static "js/jquery.js" %}></script>
+        <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
+        <link href="{% static 'css/bootstrap4-6.min.css' %}" rel="stylesheet">
+        <script src="{% static 'js/jquery.bootstrap.modal.forms.js' %}"></script>
+        <script type="text/javascript" src={% static "js/bootstrap.min.js" %}></script>
+        <script type="text/javascript" src={% static "js/bootstrap.bundle.min.js" %}></script>
+        <style>
+            body {
+              font-family: 'Advent Pro';
+            }
+        </style>
+        {% block head %}
+        {% endblock %}
+    </head>
+
+    <body class="sb-nav-fixed">
+        <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+            <!-- Navbar Brand-->
+            <i class="fa-solid fa-house-user" style="color:white;"></i>
+            <a class="navbar-brand ps-3" href="/">Home</a>
+            <!-- Sidebar Toggle-->
+            <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+            <!-- Navbar Search-->
+            <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+            </form>
+            <!-- Navbar-->
+            <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-user"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        {% if user.is_authenticated %}
+                        {% else %}
+                        <li><a class="dropdown-item" href="/login">Login</a></li>
+                        {% endif %}
+                        {% if user.is_authenticated %}
+                        <li><a class="dropdown-item" href="#"><i class="fa-solid fa-user"></i>&nbsp;Signed in as: <b>{{ request.user }}</b></a></li>
+                        <li><a class="dropdown-item" href="/change_password"><i class="fa-solid fa-cog fa-spin"></i>&nbsp;Change Password</a></li>
+                        <li><hr class="dropdown-divider" /></li>
+                        <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                        {% endif %}
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+        <div id="layoutSidenav">
+            <div id="layoutSidenav_nav">
+                <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                    <div class="sb-sidenav-menu">
+                        <div class="nav">
+                            {% if request.user|is_admin %}
+                            <div class="sb-sidenav-menu-heading">Core</div>
+                            <a class="nav-link" href="/dashboard/{{ year_nr }}/{{ week_nr }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                Dashboard
+                            </a>
+                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                Manage
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                </a>
+                            <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link" href="/substitutions">Substitutions</a>
+                                    <a class="nav-link" href="/choose_class">Timetables</a>
+                                    <a class="nav-link" href="/teachers_list">Teachers</a>
+                                    <a class="nav-link" href="/students_list">Students</a>
+                                    <a class="nav-link" href="/create_classes">Add a new class</a>
+                                    <a class="nav-link" href="/create_classroom">Add a new classroom</a>
+                                </nav>
+                            </div>
+                            {% endif %}
+                            {% if request.user|is_student %}
+                            <div class="sb-sidenav-menu-heading">For students</div>
+                            <a class="nav-link" href="/timetable/{{ student_which_class }}/{{ year_nr }}/{{ week_nr }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                                Timetable
+                            </a>
+                            <a class="nav-link" href="/s_grades">
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-spell-check"></i></div>
+                                Grades
+                            </a>
+                            <a class="nav-link" href="/student_assignments">
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-list-check"></i></div>
+                                My assignments
+                            </a>
+                            {% endif %}
+                            {% if request.user|is_teacher %}
+                            <div class="sb-sidenav-menu-heading">For teachers</div>
+                            <a class="nav-link" href="/timetable/{{ student_which_class }}/{{ year_nr }}/{{ week_nr }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                                Schedule
+                            </a>
+                            <a class="nav-link" href="/choose_grade_class">
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-spell-check"></i></div>
+                                Grades
+                            </a>
+                            <a class="nav-link" href="/teacher_assignments">
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-list-check"></i></div>
+                                Assignments
+                            </a>
+                            <a class="nav-link" href="/t_notices">
+                                <div class="sb-nav-link-icon">&nbsp;&nbsp;<i class="fa-solid fa-exclamation"></i>&nbsp;</div>
+                                Notices
+                            </a>
+                            {% endif %}
+                        </div>
+                        
+                    </div>
+                    <img style="max-height:300px;" src="{% static "img/tree.png" %}" alt="Hi!" />
+                        {% if user.is_authenticated %}
+                        <div class="sb-sidenav-footer">
+                        <div class="small">
+                            Account type: 
+                            {% for group in user.groups.all %}
+                             {{ group.name }}
+                            {% endfor %}</div>
+
+                        </div>
+                        {% else %}
+                        {% endif %}
+                </nav>
+            </div>
+            <div id="layoutSidenav_content">
+                <main>
+                    {% if messages %}
+                    {% for message in messages %}
+                      <div class="alert {{ message.tags }} alert-dismissible fade show" role="alert" id="message_container" align=right>
+                        {{ message }}
+                        <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                    <div class="container-fluid px-4">
+                        {% block content %}
+                        <br>
+                        <span align="center" style="font-family:Rancho;"><h1 class="font-effect-shadow-multiple">Name of your school</h1></span>
+                        <br>
+                        <div class="row">
+                            <div class="col">
+                        <div class="shadow card mb-4">
+                            <div class="card-header">
+                                <i class="fa-solid fa-bullhorn"></i>
+                                Announcements
+                            </div>
+                            <div class="card-body">
+                                {% if request.user|is_demo %}
+                                    Welcome, Demo user!<br>
+                                    Make yourself at home and explore the page.<br>
+                                {% else %}
+                                    You are just a regular user, no special treatment, sorry.
+                                {% endif %}
+                            </div>
+                        </div>
+                        </div>
+                        <div class="col">
+                            <div class="shadow card mb-4">
+                                <div class="card-header">
+                                    <i class="fa-solid fa-circle-info"></i>
+                                    Info
+                                </div>
+                                <div class="card-body">
+                                    {% if request.user|is_demo %}
+                                    <i class="fa-solid fa-ban" style="color:red"></i> Changing the password is disabled for Demo users.<br>
+                                    <i class="fa-solid fa-ban" style="color:red"></i> Deleting objects is disabled for Demo users.<br>
+                                    <i class="fa-solid fa-thumbs-up" style="color:green"></i> Demo users can still create, view, and edit objects.<br>
+                                    {% else %}
+                                    Congrats! You are not a Demo user!! You thought you did something, huh?
+                                    {% endif %}
+                                </div>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            
+                        </div>
+                        <div class="col">
+                            <img src="{% static "img/leaves.png" %}" alt="Hi!" width=100%/>
+                        </div>
+                    </div>
+                        {% endblock %}
+                    </div>
+                </main>
+                <footer class="py-4 bg-light mt-auto">
+                    <div class="container-fluid px-4">
+                        <div class="d-flex align-items-center justify-content-between small">
+                            <div class="text-muted">Copyright &copy; Karol Kwieciński 2022</div>
+                            <div>
+                                <i class="fa-brands fa-github fa-beat"></i>
+                                  <a href="https://github.com/cfaniaq" target="_blank">github</a>
+                                {% comment %} &middot;
+                                <i class="fa-brands fa-linkedin fa-beat"></i>
+                                <a href="https://www.linkedin.com/in/karol-kwieciński-8a4693245/" target="_blank"> LinkedIn</a> {% endcomment %}
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+        <script type="text/javascript" src={% static "js/scripts.js" %}></script>
+
+    </body>
+</html>

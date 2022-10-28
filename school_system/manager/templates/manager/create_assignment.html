@@ -1,0 +1,49 @@
+{% if request.user|is_teacher %}
+{% load crispy_forms_tags %}
+<form method="post" action="">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+   <div class="modal-header">
+      <h5 class="modal-title">Create a new assignment</h5>
+      <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  
+    <div class="modal-body {% if form.errors %}invalid{% endif %}">
+      {% comment %} <form method="POST"> {% endcomment %}
+        {% csrf_token %}
+        <div class="row">
+          <div class="col">
+            {{ form.name|as_crispy_field }}
+            {{ form.asgn_type|as_crispy_field }}
+          </div>
+          <div class="col">
+            {{ form.date|as_crispy_field }}
+            {{ form.classes|as_crispy_field }}
+          </div>
+          </div>
+          <div class="row">
+          <div class="col">
+            {{ form.subject|as_crispy_field }}
+            {{ form.description|as_crispy_field }}
+            <span style="display: none;">{{ form.who_created|as_crispy_field }}</span>
+          </div>
+          </div>
+        </div>
+    </div>
+  
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+      <button type="submit" class="btn btn-secondary">Create</button>
+    </div>
+  
+  </form>
+  
+  {% else %}
+  <div class="alert alert-danger alert-dismissible fade show" role="alert" id="message_container">
+    You have no access to this site
+    <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </div>
+  {% endif %}

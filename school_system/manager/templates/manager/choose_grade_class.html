@@ -1,0 +1,25 @@
+{% extends "manager/index.html" %}
+{% block title%}Choose a class{% endblock %}
+    {% load crispy_forms_tags %}
+    {% block content %}
+    {% if request.user|is_teacher %}
+    <br>
+<div class="shadow container-md pd-4" align="middle" style="width:30%">
+  <br>
+  <div>
+    <h1>Choose a class</h1>
+    <form method="POST" action="{% url 'manager:t_grades' %}">{% csrf_token %}
+        {{ form|crispy }}
+        <br>
+        <button class="btn btn-secondary" type="submit_classes" value="classes">Go</button>
+    </form>
+  </div>
+  <br>
+{% else %}
+<div class="alert alert-danger alert-dismissible fade show" role="alert" id="message_container">
+    You have no access to this site
+    <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+</div>
+{% endif %}
+  {% endblock %}

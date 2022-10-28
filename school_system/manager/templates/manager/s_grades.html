@@ -1,0 +1,74 @@
+{% extends "manager/index.html" %}
+{% block title%}My grades{% endblock %}
+{% block head %}
+{% endblock %}
+{% load crispy_forms_tags %}
+
+    {% block content %}
+    {% if request.user|is_student %}
+    <div class="modal fade" tabindex="-1" role="dialog" id="modal">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content"></div>
+        </div>
+      </div>
+    <br>
+
+    <div class="shadow card mb-4">
+        <div class="card-header">
+        <div class="row">
+        <div class="col" style="text-align:left">
+        <i class="fa-solid fa-graduation-cap fa-flip" style="--fa-animation-duration: 3s;"></i>
+        <strong>{{ student }}</strong>
+        </div>
+        <div class="col" style="text-align:right">
+
+        </div>
+        <div class="col-2" style="text-align:right">
+           
+        </div>
+    </div>
+</div>
+        <div class="card-body">
+            <table class="table table-hover table-bordered" style="border-spacing: 0px;">
+                <thead>
+                  <th>Subject</th>
+                <th style="width: 85%">Grades</th>
+                </thead>
+                <tbody>
+            {% for subject in subjects %}
+            <tr height="50px">
+                <td style="padding:0rem; vertical-align: middle;">
+                    &nbsp; {{ subject }}
+                </td>
+                <td>
+                    {% for grade in grades %}
+                        {% if grade.subject == subject %}
+                            <button type="button" class="show-grade bs-modal btn btn-info" data-form-url="{% url 'manager:grade_modal' grade.pk %}">{{ grade }}</button>
+                        {% endif %}
+                    {% endfor %}
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script type="text/javascript">
+        $(function () {
+      
+          $(".show-grade").each(function () {
+              $(this).modalForm({formURL: $(this).data("form-url")});
+          });
+  
+          });
+      </script> 
+
+    {% else %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" id="message_container">
+      You have no access to this site.
+      <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+  </div>
+    {% endif %}
+
+    {% endblock %}

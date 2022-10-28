@@ -1,0 +1,110 @@
+{% extends "manager/index.html" %}
+{% block title%}Grades{% endblock %}
+{% block head %}
+{% endblock %}
+{% load crispy_forms_tags %}
+
+    {% block content %}
+    {% if request.user|is_teacher %}
+    <div class="modal fade" tabindex="-1" role="dialog" id="modal">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content"></div>
+        </div>
+      </div>
+    <br>
+    {% for subject in t_subjects %}
+    
+    <div class="shadow card mb-4">
+        <div class="card-header">
+        <div class="row">
+        <div class="col" style="text-align:left">
+        <i class="fa-solid fa-graduation-cap fa-flip" style="--fa-animation-duration: 3s;"></i>
+        <strong>{{ class_name }}</strong>
+        </div>
+        <div class="col" style="text-align:right">
+         
+        </div>
+        <div class="col-2" style="text-align:right">
+         <strong>{{subject}}</strong>
+        </div>
+    </div>
+</div>
+        <div class="card-body">
+            <table class="table table-hover table-bordered" style="border-spacing: 0px;">
+                <thead>
+                  <th>Name</th>
+                <th style="width: 85%">Grades</th>
+                <th>Add</th>
+                </thead>
+                <tbody>
+            {% for student in students_list %}
+            <tr height="50px">
+                <td style="padding:0rem; vertical-align: middle;">
+                    &nbsp;{{student.first_name}} {{student.last_name}}
+                </td>
+                <td>
+                    {% for grade in grades %}
+                        {% if grade.student.id == student.id and grade.subject == subject %}
+                        <button type="button" class="show-grade bs-modal btn btn-info" data-form-url="{% url 'manager:grade_modal' grade.pk %}">{{ grade }}</button>
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td>
+                    
+                    <button class="add-grade btn btn-secondary" value={{ student.id }} type="button" onmouseenter="which_student(this)" name="button">+</button>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+    {% endfor %}
+
+    <script type="text/javascript"> window.CSRF_TOKEN = "{{ csrf_token }}"; </script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+        
+            $(".add-grade").modalForm({
+                formURL: "{% url 'manager:add_grade' %}",
+            });
+
+            $(".show-grade").each(function () {
+                $(this).modalForm({formURL: $(this).data("form-url")});
+            });
+
+        });
+        </script>
+
+        
+        <script>
+        function which_student(student, subject) {
+            $.ajax({type: 'POST',
+            url: '/add_grade',                            // some data url
+            data: {which_student: student.value,
+                csrfmiddlewaretoken: window.CSRF_TOKEN},       // some params  
+            success: function (response) {                  // callback
+                if (response.result === 'OK') {
+                    if (response.data && typeof(response.data) === 'object') {
+                        // do something with the successful response.data
+                        // e.g. response.data can be a JSON object
+                    }
+                } else {
+                    // handle an unsuccessful response
+                }
+            }
+        });
+        
+        }
+        
+        </script>
+    {% else %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" id="message_container">
+        You have no access to this site.
+      <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+  </div>
+    {% endif %}
+
+    {% endblock %}

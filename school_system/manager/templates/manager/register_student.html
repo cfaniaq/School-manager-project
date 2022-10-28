@@ -1,0 +1,43 @@
+{% extends "manager/index.html" %}
+{% block title%}Add a new student{% endblock %}
+
+{% block content %} 
+
+	{% load crispy_forms_tags %}         
+
+	<!--Register--> 
+	{% if request.user|is_admin %}
+
+		<div class="container-md" align="middle" style="width:70%;">
+		<h1>Add a new student</h1>
+		<form action='/students_list'>
+			<button class="btn btn-secondary" type="submit"><i class="fa-solid fa-arrow-left fa-beat"></i> Back to the list</button>
+		  </form>
+		<br>
+		<form method="POST">
+			{% csrf_token %}
+			<div class="row">
+				<div class="col" style="text-align:middle">
+			        {{ register_form|crispy }}
+				</div>
+                <div class="col" style="text-align:middle">
+                    {{ students_form|crispy }}
+                </div>
+			</div>
+			<br>                   
+			<button class="btn btn-secondary" type="submit">Add!</button>
+		</form>
+	</div>
+    
+
+	{% else %}
+
+	<div class="alert alert-danger alert-dismissible fade show" role="alert" id="message_container">
+		You have no access to this site
+		<button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+		<span aria-hidden="true">&times;</span>
+	  </div>
+
+	{% endif %}
+
+{% endblock %}

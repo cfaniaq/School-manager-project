@@ -1,0 +1,123 @@
+{% extends "manager/index.html" %}
+{% block title%}Notices{% endblock %}
+{% block head %}
+{% endblock %}
+{% load crispy_forms_tags %}
+
+    {% block content %}
+    {% if request.user|is_teacher %}
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="modal">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content"></div>
+        </div>
+      </div>
+      <div class="modal fade" id="create-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+          </div>
+        </div>
+      </div>
+
+    <br>
+    <div class="shadow card mb-4">
+        <div class="card-header">
+        <div class="row">
+        <div class="col" style="text-align:left">
+            <i class="fa-solid fa-exclamation"></i>&nbsp;
+        <strong>My notices</strong>
+        </div>
+        <div class="col" style="text-align:right">
+        
+        </div>
+        <div class="col-5" style="text-align:right">
+        
+            <button class="add-absence btn btn-secondary" type="button" name="button">
+                <i class="fa-solid fa-plus fa-beat" style="font-size: 1.25em; --fa-beat-scale: 0.7; --fa-animation-duration: 2s;"></i>
+                Add an absence</button>
+
+        </div>
+    </div>
+</div>
+    <div class="card-body">
+         
+        <div class="row">
+            <div class="col">
+                <div class="shadow card mb-4" style="text-align:left;">
+                    <div class="card-header">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        My absences
+                    </div>
+                    <div class="card-body">
+                        <ul class="fa-ul">
+                        {% for absence in absences %}
+                        <li style="margin-bottom: 8px;">
+                            <span class="fa-li">
+                                <i class="fa-solid fa-pen"></i>
+                            </span>
+                            <b>Absence: </b>
+                            Date: <strong>{{ absence.date|date:"d-m-Y" }}</strong>
+                            - {{ absence.status }}
+                            {% if absence.status == "In progress" %}
+                                <i class="fa-solid fa-spinner fa-spin-pulse"></i>
+                            {% elif absence.status == "Reviewed" %}
+                                <i class="fa-solid fa-thumbs-up"></i>
+                            {% elif absence.status == "Denied" %}
+                                <i class="fa-solid fa-xmark"></i>
+                            {% endif %}
+                            {% comment %} <button type="button" class="show-assignment bs-modal btn btn-sm btn-info" data-form-url="{% url 'manager:view_assignment' assignment.pk %}">
+                                <span class="fa fa-eye"></span>
+                            </button> {% endcomment %}
+                        </li>
+                    {% empty %}
+                        <li>There are no absences yet.</li>
+                    {% endfor %}
+                    </ul>
+                    </div> 
+                </div>
+          </div>
+                <div class="col">
+                    <div class="shadow card mb-4" style="text-align:left;">
+                        <div class="card-header">
+                            <i class="fa-solid fa-circle-info"></i>
+                            My substitutions
+                        </div>
+                        <div class="card-body">
+                            {% for sub in subs %}
+                            <i class="fa-solid fa-circle-info"></i>  Class: <b>{{ sub.classes }}</b>, Date: <b>{{ sub.date|date:"d-m-Y" }}</b>, Room: <b>{{ sub.classroom }}</b>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+        </div>
+</div>
+
+    
+    <script type="text/javascript">
+        $(document).ready(function() {
+        
+            $(".add-absence").modalForm({
+                formURL: "{% url 'manager:add_absence' %}",
+            });
+    
+            $(".delete-asgn").each(function () {
+                $(this).modalForm({formURL: $(this).data("form-url"), isDeleteForm: true});
+            });
+
+            $(".show-assignment").each(function () {
+                $(this).modalForm({formURL: $(this).data("form-url")});
+            });
+        
+        });
+        </script>
+
+
+    {% else %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" id="message_container">
+      You need to log in to access this site
+      <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+  </div>
+    {% endif %}
+
+    {% endblock %}

@@ -1,0 +1,83 @@
+{% extends "manager/index.html" %}
+{% block title%}Assignments{% endblock %}
+{% block head %}
+{% load static %}
+{% endblock %}
+{% load crispy_forms_tags %}
+
+    {% block content %}
+    {% if request.user|is_student %}
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="modal">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content"></div>
+        </div>
+      </div>
+      <div class="modal fade" id="create-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+          </div>
+        </div>
+      </div>
+    <br>
+    <div class="row" style="overflow:auto;">
+    <div class="col-7">
+    <div class="shadow card mb-4" style="min-width:640px;">
+        <div class="card-header">
+        <div class="row">
+        <div class="col" style="text-align:left">
+            <i class="fa-solid fa-list-check"></i>
+        <strong>List of assignments - {{ curr_class }}</strong>
+        </div>
+        <div class="col" style="text-align:right">
+        
+        </div>
+        <div class="col-2" style="text-align:right">
+        </div>
+        </div>
+        </div>
+        <div class="card-body">
+            <ul class="fa-ul">
+        {% for assignment in object_list %}
+            <li style="margin-bottom: 8px;">
+                <span class="fa-li">
+                    <i class="fa-solid fa-pen"></i>
+                </span>
+                <b>{{ assignment.name }}</b>
+                -  {{ assignment.subject }} - <b>{{ assignment.date|date:"d-m-Y" }}</b>
+                <button type="button" class="show-assignment bs-modal btn btn-sm btn-info" data-form-url="{% url 'manager:view_assignment' assignment.pk %}">
+                    <span class="fa fa-eye"></span>
+                  </button>
+            </li>
+        {% empty %}
+            <li>There are no assignments yet.</li>
+        {% endfor %}
+        </ul>
+        </div>
+    </div>
+    </div>
+    <div class="col">
+    <img src="{% static "img/good_luck.png" %}" alt="Hi!" />
+    </div>
+    </div>
+    
+    <script type="text/javascript">
+        $(function () {
+
+          $(".show-assignment").each(function () {
+              $(this).modalForm({formURL: $(this).data("form-url")});
+          });
+  
+          });
+      </script>
+
+
+    {% else %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" id="message_container">
+      You need to log in to access this site
+      <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+  </div>
+    {% endif %}
+
+    {% endblock %}

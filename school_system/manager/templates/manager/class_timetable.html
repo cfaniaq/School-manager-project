@@ -1,0 +1,414 @@
+{% extends "manager/index.html" %}
+{% block title%}Timetable{% endblock %}
+{% block head %}
+{% endblock %}
+{% load crispy_forms_tags %}
+
+    {% block content %}
+    {% if request.user|is_admin %}
+    <div class="modal fade" tabindex="-1" role="dialog" id="modal">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content"></div>
+        </div>
+      </div>
+    <br>
+  <div class="card mb-4">
+    <div class="card-header">
+    <div class="row">
+      <div class="col" style="text-align:left">
+        <i class="fa-solid fa-table fa-flip" style="--fa-animation-duration: 3s;"></i>
+       <b>{{ classes }}{{teacher_name}}</b>
+        </div>
+      <div class="col" style="text-align:right">
+      <form action='/choose_class'>
+            <button class="btn btn-secondary" type="submit">Change the class / teacher</button>
+          </form>
+      </div>
+    </div>
+  </div>
+  <div class="card-body" style="text-align:center; overflow: auto;">
+    <div class="shadow row bg-light bg-gradient " style="text-align:center; min-width:1100px;">
+      <div class="col" style="padding-right: 0px; padding-left: 0px;">
+        <table class="table table-hover table-bordered" style="border-spacing: 0px;">
+          <thead>
+            <th>Period</th>
+          </thead>
+          <tbody>
+            <tr height="50px">
+              <td style="padding:0rem; vertical-align: middle;">
+                <b>1.</b> (7:30 - 8:15)
+              </td>
+            </tr>
+            <tr height="50px">
+              <td style="padding:0rem; vertical-align: middle;">
+                <b>2.</b> (8:20 - 9:05)
+              </td>
+            </tr>
+            <tr height="50px">
+              <td style="padding:0rem; vertical-align: middle;">
+                <b>3.</b> (9:15 - 10:00)
+              </td>
+            </tr>
+            <tr height="50px">
+              <td style="padding:0rem; vertical-align: middle;">
+                <b>4.</b> (10:05 - 10:50)
+              </td>
+            </tr>
+            <tr height="50px">
+              <td style="padding:0rem; vertical-align: middle;">
+                <b>5.</b> (11:00 - 11:45)
+              </td>
+            </tr>
+            <tr height="50px">
+              <td style="padding:0rem; vertical-align: middle;">
+                <b>6.</b> (11:50 - 12:35)
+              </td>
+            </tr>
+            <tr height="50px">
+              <td style="padding:0rem; vertical-align: middle;">
+                <b>7.</b> (13:00 - 13:45)
+              </td>
+            </tr>
+            <tr height="50px">
+              <td style="padding:0rem; vertical-align: middle;">
+                <b>8.</b> (13:50 - 14:45)
+              </td>
+            </tr>
+            <tr height="50px">
+              <td style="padding:0rem; vertical-align: middle;">
+                <b>9.</b> (14:55 - 15:40)
+              </td>
+            </tr>
+            <tr height="50px">
+              <td style="padding:0rem; vertical-align: middle;">
+                <b>10.</b> (15:45 - 16:30)
+              </td>
+            </tr>
+            <tr height="50px">
+              <td style="padding:0rem; vertical-align: middle;">
+                <b>11.</b> (16:35 - 17:20)
+              </td>
+            </tr>
+            <tr height="50px">
+              <td style="padding:0rem; vertical-align: middle;">
+                <b>12.</b> (17:25 - 18:10)
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col" style="padding-right: 0px; padding-left: 0px;">
+        <table class="table table-hover table-bordered" style="border-spacing: 0px;">
+          <thead>
+            <th>Monday</th>
+          </thead>
+          <tbody>
+            {% for i in monday_list %}
+                {% if i.hour %}
+                <tr height="50px">
+                      <td style="padding:0rem; vertical-align: middle;">
+                        <div class="row">
+                            <div class="col-8" >
+                        <b>{{ i.subject }}</b>
+                        <br>({{ i.classroom }})
+                            </div>
+                            <div class="col" > 
+                        <button type="button" class="delete-tt-ele bs-modal btn" data-form-url="{% url 'manager:delete_tt_element' i.pk %}">
+                          <i class="fa-regular fa-trash-can"></i>
+                          </button>
+                        </div>
+                        </div>
+                        </td>
+                </tr>
+                {% else %}
+                <tr height="50px">
+                    <td style="padding:0rem; vertical-align: middle;">
+                      <button style="font-size: 23px;" value={{ i }} onmouseenter="get_hour_monday(this);" class="create-tt btn btn-primary-outline" type="button" name="button"><b>+</b></button>
+                    </td>
+                </tr>
+              {% endif %}
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="col" style="padding-right: 0px; padding-left: 0px;">
+        <table class="table table-hover table-bordered" style="border-spacing: 0px;">
+          <thead>
+            <th>Tuesday</th>
+          </thead>
+          <tbody>
+            {% for i in tuesday_list %}
+                {% if i.hour %}
+                <tr height="50px">
+                    <td style="padding:0rem; vertical-align: middle;">
+                      <div class="row">
+                          <div class="col-8" >
+                      <b>{{ i.subject }}</b>
+                      <br>({{ i.classroom }})
+                          </div>
+                          <div class="col" > 
+                            <button type="button" class="delete-tt-ele bs-modal btn" data-form-url="{% url 'manager:delete_tt_element' i.pk %}">
+                              <i class="fa-regular fa-trash-can"></i>
+                              </button>
+                      </div>
+                      </div>
+                      </td>
+              </tr>
+                {% else %}
+                <tr height="50px">
+                  <td style="padding:0rem; vertical-align: middle;">
+                    <button style="font-size: 23px;" value={{ i }} onmouseenter="get_hour_tuesday(this)" class="create-tt btn btn-primary-outline" type="button" name="button"><b>+</b></button>
+                  </td>
+              </tr>
+              {% endif %}
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="col" style="padding-right: 0px; padding-left: 0px;">
+        <table class="table table-hover table-bordered" style="border-spacing: 0px;">
+          <thead>
+            <th>Wednesday</th>
+          </thead>
+          <tbody>
+            {% for i in wednesday_list %}
+            {% if i.hour %}
+            <tr height="50px">
+                <td style="padding:0rem; vertical-align: middle;">
+                  <div class="row">
+                      <div class="col-8" >
+                  <b>{{ i.subject }}</b>
+                  <br>({{ i.classroom }})
+                      </div>
+                      <div class="col" > 
+                        <button type="button" class="delete-tt-ele bs-modal btn" data-form-url="{% url 'manager:delete_tt_element' i.pk %}">
+                          <i class="fa-regular fa-trash-can"></i>
+                          </button>
+                  </div>
+                  </div>
+                  </td>
+          </tr>
+            {% else %}
+            <tr height="50px">
+              <td style="padding:0rem; vertical-align: middle;">
+                <button style="font-size: 23px;" value={{ i }} onmouseenter="get_hour_wednesday(this)" class="create-tt btn btn-primary-outline" type="button" name="button"><b>+</b></button>
+              </td>
+          </tr>
+          {% endif %}
+        {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="col" style="padding-right: 0px; padding-left: 0px;">
+        <table class="table table-hover table-bordered" style="border-spacing: 0px;">
+          <thead>
+            <th>Thursday</th>
+          </thead>
+          <tbody>
+            {% for i in thursday_list %}
+            {% if i.hour %}
+            <tr height="50px">
+                <td style="padding:0rem; vertical-align: middle;">
+                  <div class="row">
+                      <div class="col-8" >
+                  <b>{{ i.subject }}</b>
+                  <br>({{ i.classroom }})
+                      </div>
+                      <div class="col" > 
+                        <button type="button" class="delete-tt-ele bs-modal btn" data-form-url="{% url 'manager:delete_tt_element' i.pk %}">
+                          <i class="fa-regular fa-trash-can"></i>
+                          </button>
+                  </div>
+                  </div>
+                  </td>
+          </tr>
+            {% else %}
+            <tr height="50px">
+              <td style="padding:0rem; vertical-align: middle;">
+                <button style="font-size: 23px;" value={{ i }} onmouseenter="get_hour_thursday(this)" class="create-tt btn btn-primary-outline" type="button" name="button"><b>+</b></button>
+              </td>
+          </tr>
+          {% endif %}
+        {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="col" style="padding-right: 0px; padding-left: 0px;">
+        <table class="table table-hover table-bordered" style="border-spacing: 0px;">
+          <thead>
+            <th>Friday</th>
+          </thead>
+          <tbody>
+            {% for i in friday_list %}
+            {% if i.hour %}
+            <tr height="50px">
+                <td style="padding:0rem; vertical-align: middle;">
+                  <div class="row">
+                      <div class="col-8" >
+                  <b>{{ i.subject }}</b>
+                  <br>({{ i.classroom }})
+                      </div>
+                      <div class="col" >
+                        <button type="button" class="delete-tt-ele bs-modal btn" data-form-url="{% url 'manager:delete_tt_element' i.pk %}">
+                          <i class="fa-regular fa-trash-can"></i>
+                          </button>
+                  </div>
+                  </div>
+                  </td>
+          </tr>
+            {% else %}
+            <tr height="50px">
+              <td style="padding:0rem; vertical-align: middle;">
+                <button style="font-size: 23px;" value={{ i }} onmouseenter="get_hour_friday(this)" class="create-tt btn btn-primary-outline" type="button" name="button"><b>+</b></button>
+              </td>
+          </tr>
+          {% endif %}
+        {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script type="text/javascript"> window.CSRF_TOKEN = "{{ csrf_token }}"; </script>
+
+<script>
+  function get_hour_monday(hour) {
+    $.ajax({type: 'POST',
+    url: '/create_timetable',                            // some data url
+    data: {which_hour: hour.value,
+           day_of_week: 1,
+           csrfmiddlewaretoken: window.CSRF_TOKEN},       // some params  
+    success: function (response) {                  // callback
+        if (response.result === 'OK') {
+            if (response.data && typeof(response.data) === 'object') {
+                // do something with the successful response.data
+                // e.g. response.data can be a JSON object
+            }
+        } else {
+            // handle an unsuccessful response
+        }
+    }
+   });
+   
+  }
+  
+</script>
+
+<script>
+  function get_hour_tuesday(hour) {
+    $.ajax({type: 'POST',
+    url: '/create_timetable',                            // some data url
+    data: {which_hour: hour.value,
+           day_of_week: 2,
+           csrfmiddlewaretoken: window.CSRF_TOKEN},       // some params  
+    success: function (response) {                  // callback
+        if (response.result === 'OK') {
+            if (response.data && typeof(response.data) === 'object') {
+                // do something with the successful response.data
+                // e.g. response.data can be a JSON object
+            }
+        } else {
+            // handle an unsuccessful response
+        }
+    }
+   });
+   
+  }
+  
+</script>
+
+<script>
+  function get_hour_wednesday(hour) {
+    $.ajax({type: 'POST',
+    url: '/create_timetable',                            // some data url
+    data: {which_hour: hour.value,
+           day_of_week: 3,
+           csrfmiddlewaretoken: window.CSRF_TOKEN},       // some params  
+    success: function (response) {                  // callback
+        if (response.result === 'OK') {
+            if (response.data && typeof(response.data) === 'object') {
+                // do something with the successful response.data
+                // e.g. response.data can be a JSON object
+            }
+        } else {
+            // handle an unsuccessful response
+        }
+    }
+   });
+   
+  }
+  
+</script>
+
+<script>
+  function get_hour_thursday(hour) {
+    $.ajax({type: 'POST',
+    url: '/create_timetable',                            // some data url
+    data: {which_hour: hour.value,
+           day_of_week: 4,
+           csrfmiddlewaretoken: window.CSRF_TOKEN},       // some params  
+    success: function (response) {                  // callback
+        if (response.result === 'OK') {
+            if (response.data && typeof(response.data) === 'object') {
+                // do something with the successful response.data
+                // e.g. response.data can be a JSON object
+            }
+        } else {
+            // handle an unsuccessful response
+        }
+    }
+   });
+   
+  }
+  
+</script>
+
+<script>
+  function get_hour_friday(hour) {
+    $.ajax({type: 'POST',
+    url: '/create_timetable',                            // some data url
+    data: {which_hour: hour.value,
+           day_of_week: 5,
+           csrfmiddlewaretoken: window.CSRF_TOKEN},       // some params  
+    success: function (response) {                  // callback
+        if (response.result === 'OK') {
+            if (response.data && typeof(response.data) === 'object') {
+                // do something with the successful response.data
+                // e.g. response.data can be a JSON object
+            }
+        } else {
+            // handle an unsuccessful response
+        }
+    }
+   });
+   
+  }
+  
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+    
+        $(".create-tt").modalForm({
+            formURL: "{% url 'manager:create_timetable' %}",
+        });
+
+        $(".delete-tt-ele").each(function () {
+            $(this).modalForm({formURL: $(this).data("form-url"), isDeleteForm: true});
+        });
+    
+    });
+    </script>
+
+    {% else %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" id="message_container">
+      You have no access to this site
+      <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+  </div>
+    {% endif %}
+
+    {% endblock %}

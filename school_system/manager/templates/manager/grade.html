@@ -1,0 +1,43 @@
+<div class="modal-header">
+    <h3 class="modal-title">{{object.subject}}</h3>
+    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  
+  <div class="modal-body">
+    <div class="">
+      Teacher: {{ object.teacher }}
+    </div>
+    <div class="">
+      Assignment: {{ object.assignment }}
+    </div>
+    <div class="">
+      Grade: {{ object.grade }} 
+    </div>
+    <div class="">
+        Date: {{ object.date|date:"d-m-Y" }} 
+      </div>
+  </div>
+  
+  <div class="modal-footer">
+    {% if request.user|is_teacher %}
+    <button type="button" class="delete_grade btn btn-danger" data-form-url="{% url 'manager:delete_grade' object.pk %}">Delete</button>
+    <button type="button" class="edit_grade btn btn-info" data-form-url="{% url 'manager:edit_grade' object.pk %}">Edit</button>
+    {% endif %}
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+  </div>
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+
+        $(".delete_grade").each(function () {
+            $(this).modalForm({formURL: $(this).data("form-url"), isDeleteForm: true});
+        });
+
+        $(".edit_grade").each(function () {
+            $(this).modalForm({formURL: $(this).data("form-url")});
+        });
+    
+    });
+    </script>

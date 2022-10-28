@@ -1,0 +1,52 @@
+<div class="modal fade" tabindex="-1" role="dialog" id="modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content"></div>
+    </div>
+    </div>
+    <div class="modal fade" id="create-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        </div>
+    </div>
+    </div>
+    
+    <div class="modal-header">
+        <h3 class="modal-title">{{ object.first_name }} {{ object.last_name }}</h3>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    
+    <div class="modal-body">
+        <div class="">
+          Teaching: 
+          {% for subject in object.subjects_taught.all %}
+          {{ subject }}
+          {% endfor %}
+        </div>
+        <div class="">
+            Class supervised: {{ object.class_supervised }}
+        </div>
+    </div>
+    
+    <div class="modal-footer">
+        {% if request.user|is_admin %}
+        <button type="button" class="delete_teacher btn btn-danger" data-form-url="{% url 'manager:delete_teacher' object.pk %}">Delete</button>
+        <button type="button" class="edit_teacher btn btn-info" data-form-url="{% url 'manager:edit_teacher' object.pk %}">Edit</button>
+        {% endif %}
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    </div>
+    
+    <script type="text/javascript">
+        $(document).ready(function() {
+    
+            $(".delete_teacher").each(function () {
+                $(this).modalForm({formURL: $(this).data("form-url"), isDeleteForm: true});
+            });
+    
+            $(".edit_teacher").each(function () {
+                $(this).modalForm({formURL: $(this).data("form-url")});
+            });
+        
+        });
+        </script>

@@ -1,0 +1,79 @@
+{% extends "manager/index.html" %}
+{% block title%}Teachers list{% endblock %}
+{% block head %}
+{% endblock %}
+{% load crispy_forms_tags %}
+
+    {% block content %}
+    {% if request.user|is_admin %}
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="modal">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content"></div>
+        </div>
+      </div>
+      <div class="modal fade" id="create-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+          </div>
+        </div>
+      </div>
+
+    <br>
+    <div class="shadow card mb-4">
+        <div class="card-header">
+        <div class="row">
+        <div class="col" style="text-align:left">
+        <i class="fa fa-address-card-o fa-flip" style="--fa-animation-duration: 3s;"></i>
+        <strong>List of teachers</strong>
+        </div>
+        <div class="col-5" style="text-align:right">
+        <form action='/register_teacher'>
+              <button class="btn btn-secondary" type="submit">
+                <i class="fa-solid fa-person-circle-plus fa-beat" style="font-size: 1.25em; --fa-beat-scale: 0.7; --fa-animation-duration: 2s;"></i>
+                 Add a teacher
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+        <div class="card-body" style="overflow:auto;">
+            <ul class="fa-ul" style="min-width:370px;">
+        {% for teacher in object_list %}
+            <li style="margin-bottom: 8px;">
+                <span class="fa-li">
+                    <i class="fa-solid fa-chalkboard-user"></i>
+                </span>{{ teacher.last_name }}  {{ teacher.first_name }} - 
+                {% for subject in teacher.subjects_taught.all %}
+                <i class="fa-solid fa-pen"></i> {{ subject }}
+                {% endfor %}
+                <button type="button" class="show-teacher bs-modal btn btn-sm btn-info" data-form-url="{% url 'manager:view_teacher' teacher.pk %}">
+                    <span class="fa fa-eye"></span>
+                </button>
+            </li>
+        {% empty %}
+            <li>There are no teachers yet.</li>
+        {% endfor %}
+        </ul>
+        </div>
+    </div>
+    
+    <script type="text/javascript">
+        $(document).ready(function() {
+        
+            $(".show-teacher").each(function () {
+                $(this).modalForm({formURL: $(this).data("form-url")});
+            });
+        
+        });
+        </script>
+
+    {% else %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" id="message_container">
+      You need to log in to access this site
+      <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+  </div>
+    {% endif %}
+
+    {% endblock %}

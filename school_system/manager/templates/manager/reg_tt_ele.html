@@ -1,0 +1,29 @@
+<div class="modal-header">
+    <h3 class="modal-title">{{ object.subject }}</h3>
+    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  
+  <div class="modal-body">
+    {% if request.user|is_teacher %}
+    <div class="">
+      Class: {{ object.classes }}
+    </div>
+    {% endif %}
+    {% if request.user|is_student %}
+    <div class="">
+      Teacher: {{ object.teacher }}
+    </div>
+    {% endif %}
+    <div class="">
+        Period: {{ object.hour }} 
+      </div>
+    <div class="">
+      Room: {{ object.classroom }}
+    </div>
+  </div>
+  
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+  </div>
