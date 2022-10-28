@@ -80,7 +80,6 @@ def dashboard(request, week_number, year_number):
     students_number = Students.objects.all().count()
     teachers_number = Teachers.objects.all().count()
     pending_notices = Absence.objects.filter(status = 'In progress').count()
-    print(students_number)
     context = {
                'students_number' : students_number,
                'teachers_number' : teachers_number,
@@ -246,7 +245,6 @@ def register_student(request):
         import random
         list = ['red','green','blue','white','black','purple','orange','yellow','pink','grey']
         return random.choice(list)
-    print(random_color())
     if request.method == "POST":
         r_form = NewUserForm(request.POST)
         s_form = StudentsForm(request.POST)
