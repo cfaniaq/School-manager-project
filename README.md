@@ -1,6 +1,6 @@
 # School manager project
 ```
-The demo available at: https://school-manager-project.herokuapp.com/login. 
+The demo available at: https://school-manager-project.herokuapp.com 
 If you didn't get the Demo ID and password, please contact me.
 ```
 The backend:
