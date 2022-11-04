@@ -6,7 +6,8 @@ If you didn't get the Demo ID and password, please contact me.
 The backend:
 - does user authentication,
 - allows to add grades, assignments, create new classrooms, etc.
-- provides a timetable creation tool (doesn't work well on mobile due to problems with javascript)
+- provides a timetable creation tool (doesn't work well on mobile due to problems with javascript),
+- simple APIs available at /api,
 
 The frontend:
 - uses bootstrap to make the page look nice,
